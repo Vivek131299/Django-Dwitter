@@ -1,0 +1,147 @@
+{% extends "users/base.html" %}
+{% block content %}
+
+    <div class="card mb-3">
+      <h5 class="card-header">
+        <div class="inline-block">
+            <div class="float-left">
+                {% if dweet.user == request.user %}
+                    <a href="{% url 'profile' %}">
+                {% else %}
+                    <a href="{% url 'profile' dweet.user.profile.id %}">
+                {% endif %}
+                {{ dweet.user.username }}
+                </a>
+             </div>
+             <div class="float-right">
+                {% if dweet.user == request.user %}
+                    <a href="#" onclick="confirmDelete('{% url 'delete_dweet' dweet.id %}')">
+                        <button class="btn bg-transparent" type="button"><i class="bi bi-trash text-danger"></i></button>
+                    </a>
+                {% endif %}
+             </div>
+        </div>
+        <br>
+        {% load humanize %}
+        <small>
+        <div class="card-subtitle mt-1 text-muted" data-toggle="tooltip" data-placement="right" title="{{ dweet.created_at }}" style="display:inline-block;">
+          {{ dweet.created_at|naturaltime }}
+        </div>
+        </small>
+
+      </h5>
+
+      <div class="card-body">
+        <p class="card-text">{{ dweet.body }}</p>
+<!--                                <a href="#" class="btn btn-primary">Go somewhere</a>-->
+      </div>
+        <div class="card-footer inline-block">
+            <div class="float-left">
+                {% if is_liked %}
+                    <a href="{% url 'like_dweet' dweet.id %}">
+                        <button type="button" class="btn bg-transparent">
+                            <i class="bi bi-hand-thumbs-up-fill" style="font-size: 1.2rem; color: #007bff;"></i>
+                            {{ dweet.dweet_likes.count }}
+                        </button>
+                    </a>
+
+                {% else %}
+                    <a href="{% url 'like_dweet' dweet.id %}">
+                        <button type="button" class="btn bg-transparent">
+                            <i class="bi bi-hand-thumbs-up" style="font-size: 1.2rem; color: #007bff;"></i>
+                            {{ dweet.dweet_likes.count }}
+                        </button>
+                    </a>
+
+                {% endif %}
+            </div>
+            <div class="float-right">
+                <a href="{% url 'dweet_detail' dweet.id %}">
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="bi bi-chat-dots" style="font-size: 1.2rem;"></i>
+                            Comments {{ dweet.dweet_comments.count }}
+                        </button>
+                    </a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row g-2">
+        <div class="col-sm-4">
+            <legend>Likes</legend>
+            <div class="card" style="width: 18rem;">
+                  {% if dweet_likes %}
+                    {% for like in dweet_likes %}
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            {{ like.profile.user.username }}
+                        </li>
+                    </ul>
+                    {% endfor %}
+                  {% endif %}
+
+            </div>
+        </div>
+        <div class="col-sm">
+            <legend>Comments</legend>
+            <ul class="list-group">
+            <div class="card list-group-item">
+                <div class="row mx-auto">
+                    <form class = "form-inline col" method="POST" action="{% url 'add_comment' dweet.id %}">
+                        {% csrf_token %}
+                         <div class="row mx-auto">
+                            <div class="col">
+                                <input class="form-control" type="text" name="comment_body" placeholder="Add New Comment" required><br>
+                            </div>
+                            <div class="col">
+                                <input class="form-control btn btn-primary" type="submit" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                  {% if dweet_comments %}
+                    {% for comment in dweet_comments %}
+
+                        <li class="list-group-item">
+                            <div>
+                                <div class="inline-block">
+                                    {% if comment.profile.user == request.user %}
+                                        <a href="{% url 'profile' %}">
+                                    {% else %}
+                                        <a href="{% url 'profile' comment.profile.id %}">
+                                    {% endif %}
+                                    <div class="float-left"><b>{{ comment.profile.user.username }}</b></div>
+                                    </a>
+                                    {% load humanize %}
+                                    <div class="float-right">
+                                        <small class="text-muted">{{ comment.created_at|naturaltime }}</small>
+                                    </div>
+                                </div>
+                                <br><br>
+                                {{ comment.body }}
+                            </div>
+                        </li>
+
+                    {% endfor %}
+                  {% endif %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+    <script>
+        function confirmDelete(url) {
+            var confirmation = confirm("Are you sure you want to delete this dweet?");
+            if (confirmation) {
+                window.location.href = url;
+            }
+        }
+    </script>
+{% endblock content %}
+<!-- </body>
+</html> -->
