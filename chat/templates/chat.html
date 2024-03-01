@@ -1,0 +1,102 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<style>
+/* Style for messages sent by the current user */
+.message-right {
+    margin-right: 10px;
+    text-align: right;
+    color: blue; /* Change the color as per your design */
+}
+
+/* Style for messages sent by other users */
+.message-left {
+    margin-left: 10px;
+    text-align: left;
+    color: green; /* Change the color as per your design */
+}
+
+/* Additional styling for the chat log */
+.chat-log {
+    border: none;
+    resize: none;
+    overflow-y: scroll; /* Enable vertical scrolling */
+}
+</style>
+
+    <div class="card h-100">
+      <div class="card-body">
+        <h4 class="card-title">{{ profile.user.username }}</h4>
+          <hr>
+
+<!--          <textarea id="chat-log" cols="100" rows="20">-->
+<!--            {% for chat in chats %}-->
+<!--              {{chat.content}}-->
+<!--            {% endfor %}-->
+<!--          </textarea>-->
+          <div id="chat-log" class="chat-log" style="width: 100%; height: 300px; overflow-y: scroll;">
+                <!-- Messages will be appended here -->
+            </div>
+
+        <div class="position-absolute fixed-bottom ml-5 mr-5 mb-3">
+        <div class="input-group">
+           <input id="chat-message-input" type="text" class="form-control" placeholder="Type a message">
+           <span class="input-group-btn ml-2">
+                <button id="chat-message-submit" class="btn btn-primary" type="button">Send</button>
+           </span>
+        </div>
+          </div>
+      </div>
+
+    </div>
+
+{{ request.user.username|json_script:"sender_username" }}
+{{ profile.user.username|json_script:"receiver_username" }}
+<script>
+
+    const usernames = [JSON.parse(document.getElementById("sender_username").textContent), JSON.parse(document.getElementById("receiver_username").textContent)];
+    usernames.sort();
+
+    const roomName = usernames.join("_");
+    console.log(roomName)
+    var ws = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/");
+
+    ws.onopen = function () {
+      console.log('WebSocket Connection Open...')
+    };
+
+    ws.onmessage = function (event) {
+      console.log("Message received from server...", event.data)
+      const data = JSON.parse(event.data)
+      console.log("Data...", data)
+
+      // Determine the class based on the sender
+      const messageClass = data.sender === JSON.parse(document.getElementById("sender_username").textContent) ? 'message-right' : 'message-left';
+
+      // Create a new div element with the appropriate class and message content
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add(messageClass);
+      messageDiv.textContent = data.message;
+
+      // Append the message to the chat log textarea
+      document.querySelector('#chat-log').appendChild(messageDiv);
+
+      // Scroll to the bottom of the chat log textarea
+      document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
+    }
+
+    document.getElementById("chat-message-submit").onclick = function (event) {
+      const messageInputDom = document.getElementById("chat-message-input")
+      const message = messageInputDom.value
+      ws.send(JSON.stringify({
+        'msg': message,
+        'sender': JSON.parse(document.getElementById("sender_username").textContent)
+      }))
+      messageInputDom.value = '';
+    }
+
+</script>
+
+
+{% endblock content %}
