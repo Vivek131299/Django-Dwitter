@@ -25,6 +25,7 @@ class ChatConsumer(WebsocketConsumer):
 
         self.group_name = self.scope['url_route']['kwargs']['groupname']
         # connection has to be accepted
+        print(self.group_name)
 
         async_to_sync(self.channel_layer.group_add)(
             self.group_name,

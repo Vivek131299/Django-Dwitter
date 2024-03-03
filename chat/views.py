@@ -13,7 +13,7 @@ from .models import Chat, Group
 #     return render(request, 'chat.html', {'room': chat_room})
 
 
-def chat_view(request, id):
+def chat_view(request, id, group_name):
     profile = Profile.objects.get(id=id)
 
     group = Group.objects.filter(name=group_name).first()
@@ -24,4 +24,4 @@ def chat_view(request, id):
         group = Group(name=group_name)
         group.save()
 
-    return render(request, 'chat.html', {'profile': profile})
+    return render(request, 'chat.html', {'profile': profile, 'group_name': group_name, 'chats': chats})

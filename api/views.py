@@ -136,7 +136,11 @@ def display_profile(request, id=None):
         profile_dweets = list(Dweet.objects.filter(user=user).order_by("-created_at"))
         dweet_ids_liked_by_profile = list(Like.objects.filter(profile=request.user.profile).values_list('dweet__id', flat=True))
 
-        return render(request, 'profile.html', {"profile": profile, "followers_list": followers_list, "following_list": following_list, "profile_dweets": profile_dweets, "owner": owner, "is_following":is_following, "dweet_ids_liked_by_profile": dweet_ids_liked_by_profile})
+        usernames = [profile.user.username, request.user.username]
+        usernames.sort()
+        group_name = "_".join(usernames)
+
+        return render(request, 'profile.html', {"profile": profile, "followers_list": followers_list, "following_list": following_list, "profile_dweets": profile_dweets, "owner": owner, "is_following":is_following, "dweet_ids_liked_by_profile": dweet_ids_liked_by_profile, "group_name": group_name})
 
 
 @csrf_exempt

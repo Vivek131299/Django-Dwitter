@@ -30,14 +30,17 @@
         <h4 class="card-title">{{ profile.user.username }}</h4>
           <hr>
 
-<!--          <textarea id="chat-log" cols="100" rows="20">-->
-<!--            {% for chat in chats %}-->
-<!--              {{chat.content}}-->
-<!--            {% endfor %}-->
-<!--          </textarea>-->
-          <div id="chat-log" class="chat-log" style="width: 100%; height: 300px; overflow-y: scroll;">
+          <div contenteditable="true" id="chat-log-history" cols="100" rows="20">
+            {% for chat in chats %}
+              <div class="chat-log {% if chat.sender == request.user %}message-right{% else %}message-left{% endif %}" style="width: 100%; height: 300px; overflow-y: scroll;">
+                {{chat.content}}
+              </div>
+            {% endfor %}
+
+            <div id="chat-log" class="chat-log" style="width: 100%; height: 300px; overflow-y: scroll;">
                 <!-- Messages will be appended here -->
             </div>
+          </div>
 
         <div class="position-absolute fixed-bottom ml-5 mr-5 mb-3">
         <div class="input-group">
@@ -51,16 +54,12 @@
 
     </div>
 
+{{ group_name|json_script:"group_name" }}
 {{ request.user.username|json_script:"sender_username" }}
 {{ profile.user.username|json_script:"receiver_username" }}
 <script>
-
-    const usernames = [JSON.parse(document.getElementById("sender_username").textContent), JSON.parse(document.getElementById("receiver_username").textContent)];
-    usernames.sort();
-
-    const roomName = usernames.join("_");
-    console.log(roomName)
-    var ws = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/");
+    group_name = JSON.parse(document.getElementById("group_name").textContent)
+    var ws = new WebSocket("ws://" + window.location.host + "/ws/chat/" + group_name + "/");
 
     ws.onopen = function () {
       console.log('WebSocket Connection Open...')
