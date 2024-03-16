@@ -1,0 +1,103 @@
+{% extends "users/base.html" %}
+{% block content %}
+	<style>
+	.title {
+		text-align: center;
+		letter-spacing: 1px;
+	}
+	.muted {
+		color: #8e7f7f;
+		display: block;
+		margin-bottom: 10px;
+		text-align: center;
+	}
+	.btn_container {
+		padding: 20px;
+		text-align: center;
+	}
+<!--	.btn {-->
+<!--		border-radius: 4px;-->
+<!--		cursor: pointer;-->
+<!--		padding: 4px 8px;-->
+<!--		background-color: #ffaaa7;-->
+<!--		color: white;-->
+<!--		font-size: 1.2em;-->
+<!--		font-weight: 600;-->
+<!--		letter-spacing: 1px;-->
+<!--	}-->
+	</style>
+</head>
+<body>
+<center>
+	<div class="card">
+		<div class="card-body">
+			<h2 class="card-title">Donate</h2>
+			<small class="muted"
+				>If you like my work, you can support me by donating.</small>
+
+				<br>
+
+				<form class="form w-25" method="POST" action="{% url 'payment' %}">
+					{% csrf_token %}
+					<input class="form-control" type="number" min="1" name="amount" placeholder="Amount (in Rs.)" required><br>
+					<input class="form-control btn btn-primary" type="submit" value="Submit">
+				</form>
+				</center>
+		</div>
+	</div>
+
+	<br>
+	<legend class="border-bottom mb-3">
+		<div class="inline-block">
+			<div class="float-left">
+				My Donations
+			</div>
+			<div class="float-right">
+				{% load my_custom_filters %}
+				Total Donation: Rs. {{ total_donation|divide:100 }}
+			</div>
+		</div>
+		<br>
+	</legend>
+	<div class="col-md-6">
+	{% if user_donations %}
+		{% for donation in user_donations %}
+
+			<div class="card mb-3">
+			  <h5 class="card-header">
+
+				Rs. {{ donation.amount|divide:100}}
+<!--					  <div class="float-right">-->
+<!--						  {% if dweet.user == request.user %}-->
+<!--								<a href="#" onclick="confirmDelete('{% url 'delete_dweet' dweet.id %}')">-->
+<!--									<button class="btn bg-transparent" type="button"><i class="bi bi-trash text-danger"></i></button>-->
+<!--								</a>-->
+<!--							{% endif %}-->
+<!--					  </div>-->
+
+				 <br>
+				{% load humanize %}
+				<small>
+				<div class="card-subtitle mt-1 text-muted">
+				  {{ donation.timestamp|naturaltime }}
+				</div>
+				</small>
+
+			  </h5>
+
+			  <div class="card-body">
+				<p class="card-text">
+					Order ID: {{ donation.provider_order_id }}
+					<br>
+					Payment ID: {{ donation.payment_id }}
+				</p>
+			  </div>
+			</div>
+
+			{% endfor %}
+		{% endif %}
+	</div>
+
+</body>
+
+{% endblock content %}

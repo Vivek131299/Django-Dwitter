@@ -1,0 +1,14 @@
+{% extends "users/base.html" %}
+{% block content %}
+
+<h2 class="account-heading">Chats</h2>
+<hr>
+{% for chat in chat_views %}
+  <ul class="list-group list-group-flush">
+    <a href="{% url 'chat' chat.profile_id chat.group_name %}" class="list-group-item list-group-item-action" style="width: 50%;">
+      {{ chat.username }}
+    </a>
+  </ul>
+{% endfor %}
+
+{% endblock content %}

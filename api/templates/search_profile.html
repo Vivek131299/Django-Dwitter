@@ -1,0 +1,26 @@
+{% extends "users/base.html" %}
+{% block content %}
+
+<form class = "form-inline col" onsubmit="{% url 'search_profile' %}" method="POST" action="{% url 'search_profile' %}">
+    {% csrf_token %}
+     <div class="row mx-auto">
+        <div class="col">
+            <input class="form-control" type="text" name="profile_name" placeholder="Search Profile" required><br>
+        </div>
+        <div class="col">
+            <input class="form-control btn btn-primary" type="submit" value="Search">
+        </div>
+    </div>
+</form>
+
+{% if matching_profiles %}
+{% for profile in matching_profiles %}
+  <ul class="list-group list-group-flush">
+    <a href="{% url 'profile' profile.id %}" class="list-group-item list-group-item-action" style="width: 50%;">
+      {{ profile.user.username }}
+    </a>
+  </ul>
+{% endfor %}
+{% endif %}
+
+{% endblock content %}
