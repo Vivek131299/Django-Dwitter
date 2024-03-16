@@ -1,13 +1,16 @@
+import json
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 import io
 from rest_framework.parsers import JSONParser
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Follow, Dweet, Like, Comment
 from django.db.models import Q
 from django.contrib import messages
+from django.core import serializers
 
 
 # Create your views here.
@@ -166,3 +169,16 @@ def add_comment(request, id):
         comment.save()
         messages.success(request, "Comment added successfully")
         return redirect(request.META['HTTP_REFERER'])
+
+
+@csrf_exempt
+@login_required
+def search_profile(request):
+    matching_profiles = []
+    if 'profile_name' in request.POST:
+        profile_name = request.POST['profile_name']
+        print(profile_name)
+        users = list(User.objects.filter(username__contains=profile_name))
+        for user in users:
+            matching_profiles.append(Profile.objects.get(user=user))
+    return render(request, 'search_profile.html', {"matching_profiles": matching_profiles})

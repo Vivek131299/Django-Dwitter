@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
     'channels',
     'chat',
+    'payment',
 
 ]
 
@@ -69,7 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "allauth.account.middleware.AccountMiddleware",
+    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 # For OAuth
@@ -115,7 +116,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django_dwitter',
         'USER': 'root',
-        'PASSWORD': 'My@mysql123',
+        'PASSWORD': "",
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -202,8 +203,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "vivek131299@gmail.com"
-EMAIL_HOST_PASSWORD = "azasnlprxrmrfasb"
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
 DEFAULT_FROM_EMAIL = "noreply<no_reply@django-dwitter.com>"
 
 PASSWORD_RESET_TIMEOUT = 14400  # token will be valid for 4 hours
@@ -221,3 +222,5 @@ CHANNEL_LAYERS = {
     }
 }
 
+RAZOR_KEY_ID = ""
+RAZOR_KEY_SECRET = ""

@@ -40,6 +40,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', user_views.activate, name='activate'),
 
     path('chat/', include('chat.urls')),
+    path('donate/', include('payment.urls')),
 ]
 
 if settings.DEBUG:

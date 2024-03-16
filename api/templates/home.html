@@ -97,9 +97,15 @@
         </div>
 
             <div class="col col-md-2">
+
                 <div class="card" style="width: 18rem;">
                   <div class="card-header">
                     All Profiles
+                      <div class="float-right">
+                          <a href="{% url 'search_profile' %}">
+                            Search
+                          </a>
+                      </div>
                   </div>
                   <ul class="list-group list-group-flush">
                       {% if all_profiles %}
@@ -129,6 +135,7 @@
                 window.location.href = url;
             }
         }
+
     </script>
 {% endblock content %}
 <!-- </body>

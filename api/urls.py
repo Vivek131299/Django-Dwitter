@@ -15,4 +15,5 @@ urlpatterns = [
     path('dweets/followed/', views.get_followed_dweets, name='get_followed_dweets'),
     path('profile/', views.display_profile, name='profile'),
     path('profile/<int:id>/', views.display_profile, name='profile'),
+    path('search/', views.search_profile, name='search_profile'),
 ]
